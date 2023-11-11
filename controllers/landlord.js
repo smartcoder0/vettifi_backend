@@ -50,13 +50,12 @@ const getCurrentLandLord = (req, res) => {
     } else {
       LandlordSchema.find({ _id: req.params.id })
       .exec()
-      .then( (err, result) => {
-        if (err) {
-          console.log(err);
-          res.status(500).json({ message: err });
-        } else {
-          res.status(200).json(result);
-        }
+      .then((result) => {
+        res.status(200).json({ result })
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ message: err.message })
       })
     }
   });
