@@ -17,7 +17,7 @@ const loginController = async (req, res) => {
             },
             JWT_SECRET
             )
-            return res.json({ status: 'ok', data: token, role: 'landlord', data: landlord})
+            return res.json({ status: 'ok', token: token, role: 'landlord', data: landlord})
         } else {
             return res.json({ status: 'error', error: 'Incorrect email or password'})
         }
