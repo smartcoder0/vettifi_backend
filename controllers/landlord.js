@@ -22,6 +22,7 @@ const createLandlord = async (req, res) => {
       lastName: req.body.lastName,
       email: req.body.email,
       phoneNumber: req.body.phoneNumber,
+      address: req.body.address,
       password: password,
       tenants: [],
       history: [],
