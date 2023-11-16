@@ -13,7 +13,7 @@ const createLandlord = async (req, res) => {
   const landlordNumber = await LandlordSchema.findOne({ phoneNumber }).lean();
 
   if (landlordEmail || landlordNumber) {
-    return res.json({ status: "error", error: "User already extisting" });
+    return res.status(409).json({ status: "error", error: "User already existing" });
   } else {
     const password = await bcrypt.hash(req.body.password, 10);
 
