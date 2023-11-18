@@ -19,10 +19,10 @@ const loginController = async (req, res) => {
             )
             return res.json({ status: 'ok', token: token, role: 'landlord', data: landlord})
         } else {
-            return res.json({ status: 'error', error: 'Incorrect email or password'})
+            return res.status(409).json({ status: 'error', error: 'Incorrect email or password'})
         }
     }
-    res.json({status: 'error', error: 'User does not exist'})
+    res.status(409).json({status: 'error', error: 'User does not exist'})
 }
 
 module.exports = {loginController}
