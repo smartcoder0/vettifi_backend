@@ -31,7 +31,7 @@ const TenantSchema = new mongoose.Schema({
     },
     dob: {
         type: String,
-        required: true
+        required: false
     },
     reviews: {
         type: Array,

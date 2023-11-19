@@ -4,7 +4,7 @@ const ensureToken = require("../token")
 
 const router = express.Router();
 
-router.post('/register', tenantController.createTenant);
+router.post('/register/:id', tenantController.createTenant);
 router.get('/get/one/:id', ensureToken, tenantController.getCurrentTenant);
 router.get('/get/all', ensureToken, tenantController.getAllTenants);
 
