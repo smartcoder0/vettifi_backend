@@ -7,59 +7,69 @@ const JWT_SECRET = "jdfuqgwefouh@#$%jknskdjhu%$^jasbdjqd376@!%sdlfj";
 
 //CREATE NEW TENANT
 const createTenant = async (req, res) => {
-  const { id } = req.params.id;
+  const { email, phoneNumber, nin } = req.body;
 
-  const landlord = await LandlordSchema.findOne({ id }).lean();
-  // console.log(landlord, id._id);
+  const tenantEmail = await tenantSchema.findOne({ email }).lean();
+  const tenantNumber = await tenantSchema.findOne({ phoneNumber }).lean();
+  const tenantNin= await tenantSchema.findOne({ nin }).lean();
 
-  const currentTenants = Array.from(landlord.tenants);
+  if(tenantEmail || tenantNumber || tenantNin) {
+    return res.status(409).json({ status: "error", error: "Tenant already existing" });
+  } else {
+    const { id } = req.params.id;
 
-  const tenant = new tenantSchema({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    address: req.body.address,
-    phoneNumber: req.body.phoneNumber,
-    profilePic: req.body.profilePic,
-    nin: req.body.nin,
-    dob: req.body.dob,
-    reviews: [],
-    pendingPayments: [],
-    propertyType: req.body.propertyType,
-    leaseAmount: req.body.leaseAmount,
-    leaseDuration: req.body.leaseDuration,
-    paymentProof: req.body.paymentProof,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
-    report: req.body.report,
-    status: "active",
-    createdAt: req.body.createdAt,
-    updatedAt: req.body.updatedAt,
-  });
-
-  currentTenants.push(tenant);
-
-  const tenantUpdate = await LandlordSchema.findByIdAndUpdate(
-    { _id: req.params.id },
-    {
-      $set: {
-        tenants: currentTenants,
-      },
+    const landlord = await LandlordSchema.findOne({ id }).lean();
+    // console.log(landlord, id._id);
+  
+    const currentTenants = Array.from(landlord.tenants);
+  
+    const tenant = new tenantSchema({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      address: req.body.address,
+      phoneNumber: req.body.phoneNumber,
+      profilePic: req.body.profilePic,
+      nin: req.body.nin,
+      dob: req.body.dob,
+      reviews: [],
+      pendingPayments: [],
+      propertyType: req.body.propertyType,
+      leaseAmount: req.body.leaseAmount,
+      leaseDuration: req.body.leaseDuration,
+      paymentProof: req.body.paymentProof,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      report: req.body.report,
+      status: "active",
+      createdAt: req.body.createdAt,
+      updatedAt: req.body.updatedAt,
+    });
+  
+    currentTenants.unshift(tenant);
+  
+    const tenantUpdate = await LandlordSchema.findByIdAndUpdate(
+      { _id: req.params.id },
+      {
+        $set: {
+          tenants: currentTenants,
+        },
+      }
+    );
+  
+    if (tenantUpdate) {
+      tenant
+        .save()
+        .then(() => {
+          console.log("Tenant Created Successfully");
+          res
+            .status(200)
+            .json({ message: "Tenant Created Successfully", status: "ok" });
+        })
+        .catch((err) => {
+          res.status(500).json({ message: err });
+        });
     }
-  );
-
-  if (tenantUpdate) {
-    tenant
-      .save()
-      .then(() => {
-        console.log("Tenant Created Successfully");
-        res
-          .status(200)
-          .json({ message: "Tenant Created Successfully", status: "ok" });
-      })
-      .catch((err) => {
-        res.status(500).json({ message: err });
-      });
   }
 };
 
