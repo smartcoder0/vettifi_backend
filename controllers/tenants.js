@@ -91,9 +91,32 @@ const getCurrentTenant = (req, res) => {
   });
 };
 
+//GET TENANT BY NIN
+const getTenantByNin = (req, res) => {
+  // console.log(req.params.nin)
+  jwt.verify(req.token, JWT_SECRET, function(err, data){
+    if(err) {
+      res.status(403).send(err.message);
+    } else {
+      tenantSchema.find({nin: req.query.nin})
+      .exec()
+      .then((result) => {
+        res.status(200).json({result})
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({message: err.message})
+      })
+    }
+  });
+}
+
 // GET ALL TENANTS
 
 const getAllTenants = (req, res) => {
+
+  const { nin } = req.query;
+
   jwt.verify(req.token, JWT_SECRET, function (err, data) {
     if (err) {
       res.status(403);
@@ -110,4 +133,4 @@ const getAllTenants = (req, res) => {
   });
 };
 
-module.exports = { createTenant, getCurrentTenant, getAllTenants };
+module.exports = { createTenant, getCurrentTenant, getAllTenants, getTenantByNin };
